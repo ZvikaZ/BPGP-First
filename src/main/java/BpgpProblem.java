@@ -1,35 +1,33 @@
-import ec.*;
-import ec.gp.*;
-import ec.simple.*;
+import ec.EvolutionState;
+import ec.Individual;
+import ec.gp.GPIndividual;
+import ec.gp.GPProblem;
+import ec.gp.GPTree;
 import ec.gp.koza.KozaFitness;
-
+import ec.simple.SimpleProblemForm;
+import func.StringData;
+import il.ac.bgu.cs.bp.bpjs.analysis.DfsBProgramVerifier;
+import il.ac.bgu.cs.bp.bpjs.analysis.VerificationResult;
+import il.ac.bgu.cs.bp.bpjs.analysis.listeners.PrintDfsVerifierListener;
 import il.ac.bgu.cs.bp.bpjs.execution.BProgramRunner;
+import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
 import il.ac.bgu.cs.bp.bpjs.model.StringBProgram;
-import il.ac.bgu.cs.bp.bpjs.model.BEvent;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.URL;
-import org.apache.commons.io.IOUtils;
 
-import func.StringData;
+//import il.ac.bgu.cs.bp.statespacemapper.GenerateAllTracesInspection;
 
 public class BpgpProblem extends GPProblem implements SimpleProblemForm {
     static final String bpRunLog = "bpRun.log";
-    static final int numOfRandomRuns = 40;
+    static final int numOfRandomRuns = 0;
+    static final boolean useVerifier = true;
     static final boolean debug = false;
 
     private int bpRun(String generatedCode) {
-        // This will load the program file from <Project>/src/main/resources/
-        // TODO take file name from user (param file, or cli flag)
-        String code = resourceToString("FourInARow.js");
-
-        // TODO redirect these to some file, waiting for https://github.com/bThink-BGU/BPjs/issues/163
-        code = "bp.log.setLevel(\"Warn\");\n" + code;
-
-        code += "\n\n" + generatedCode;
-
-        final BProgram bprog = new StringBProgram(code);
+        final BProgram bprog = getBProgram(generatedCode);
 
         BProgramRunner rnr = new BProgramRunner(bprog);
         BpgpListener listener = null;
@@ -46,6 +44,46 @@ public class BpgpProblem extends GPProblem implements SimpleProblemForm {
         rnr.run();
 
         return getRunFitness(listener.runResult);
+    }
+
+    private int bpVerify(String generatedCode) {
+        final BProgram bprog = getBProgram(generatedCode);
+//        GenerateAllTracesInspection inspector = new GenerateAllTracesInspection();
+//        ExecutionTraceInspection inspection = new ExecutionTraceInspection();
+        DfsBProgramVerifier vrf = new DfsBProgramVerifier();           // ... and a verifier
+//        vrf.setProgressListener(new BriefPrintDfsVerifierListener());  // add a listener to print progress
+        VerificationResult res = null;                  // this might take a while
+        try {
+            res = vrf.verify(bprog);
+            PrintDfsVerifierListener listener = new PrintDfsVerifierListener();
+            vrf.setProgressListener(listener);
+            var event = vrf.trace
+            System.out.println(listener);
+//            return getRunFitness(listener.);
+//            Collection<List<BEvent>> traces = inspector.getResult().traces;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;       //TODO!
+
+    }
+
+
+
+    private BProgram getBProgram(String generatedCode) {
+        // This will load the program file from <Project>/src/main/resources/
+        // TODO take file name from user (param file, or cli flag)
+        String code = resourceToString("FourInARow.js");
+
+        // TODO redirect these to some file, waiting for https://github.com/bThink-BGU/BPjs/issues/163
+        code = "bp.log.setLevel(\"Warn\");\n" + code;
+
+        //TODO use bprog.appendSource , like in ./src/test/java/il/ac/bgu/cs/bp/bpjs/examples/analysis/TicTacToe/TicTacToeVerificationMain.java
+
+        code += "\n\n" + generatedCode;
+
+        return new StringBProgram(code);
     }
 
     // Koza fitness: 0 is best, infinity is worst
@@ -101,6 +139,9 @@ public class BpgpProblem extends GPProblem implements SimpleProblemForm {
                 System.out.println("runResult:" + runResult);
             totalRunResults += runResult;
         }
+
+        if (useVerifier)
+            totalRunResults += bpVerify(input.str);
 
         System.out.println("totalRunResults: " + totalRunResults);
         KozaFitness f = ((KozaFitness)ind.fitness);
