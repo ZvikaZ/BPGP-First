@@ -3,7 +3,6 @@ TODO
 
 NEXT
 ----
-- column +-1
 - graph:
   - population size
   - mean and avarage fitnesses

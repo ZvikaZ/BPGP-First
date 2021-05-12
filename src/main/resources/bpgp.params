@@ -4,7 +4,7 @@ parent.1 = @ec.Evolve gp/koza/koza.params
 
 gp.fs.size = 1
 gp.fs.0.name = f0
-gp.fs.0.size = 11
+gp.fs.0.size = 12
 
 # Cons
 gp.fs.0.func.0 = func.Cons
@@ -31,6 +31,8 @@ gp.fs.0.func.5 = func.ColumnERC
 gp.fs.0.func.5.nc = nc0
 gp.fs.0.func.6 = func.MyColor
 gp.fs.0.func.6.nc = nc0
+gp.fs.0.func.11 = func.SmallDeltaERC
+gp.fs.0.func.11.nc = nc0
 
 # Specific events
 gp.fs.0.func.7 = func.PutInCol
@@ -38,7 +40,7 @@ gp.fs.0.func.7.nc = nc2
 
 # Terminals
 gp.fs.0.func.9 = func.ColumnOfWait
-gp.fs.0.func.9.nc = nc0
+gp.fs.0.func.9.nc = nc1
 
 
 eval.problem.problem = BpgpProblem
@@ -47,8 +49,8 @@ eval.problem.problem.data = func.StringData
 ge.species.file.0 = bpgp.grammar
 
 # the default is 15, too small for us...
-pop.subpop.0.species.min-initial-size = 35
-pop.subpop.0.species.max-initial-size = 80
+pop.subpop.0.species.min-initial-size = 60
+pop.subpop.0.species.max-initial-size = 100
 
 # if the genome is still too small, wrap around 4 times before giving up
 pop.subpop.0.species.passes = 4

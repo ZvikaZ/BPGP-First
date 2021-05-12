@@ -17,7 +17,8 @@
 <requestable-event-after-wait> ::= (PutInCol <col-after-wait> <color>)
 <col> ::= (ColumnERC)
 <color> ::= (MyColor)
-<col-after-wait> ::= (ColumnERC) | (ColumnOfWait)
+<col-after-wait> ::= (ColumnERC) | (ColumnOfWait <delta>)
+<delta> ::= (SmallDeltaERC)
 #
 # TODO use priorities?
 # TODO do want to have 'block's?
