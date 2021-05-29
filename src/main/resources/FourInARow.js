@@ -199,14 +199,16 @@ for ( var i=0; i<len; i++ ) {
             {
                 fourEventArr.push(putCoin(currentFour[i].row, currentFour[i].col, "Yellow"));
             }
-            bp.info.log(j)
-            bp.info.log(fourEventArr)
+			// bp.log.info(j)
+            // bp.log.info(fourEventArr)
 
 			for ( var i=0; i<4; i++ ) {
+				// bp.log.info("Detect YellowWin waiting " + j + " #" + i)
+				// bp.log.info(fourEventArr)
 				let e = bp.sync({waitFor:fourEventArr});
-				if (i>=0) {
-					bp.log.info("Detect YellowWin #" + i + " : " + e)
-					bp.log.info(currentFour)
+				if (true) {
+					// bp.log.info("Detect YellowWin received " + j + ", #" + i + " : " + e)
+					// bp.log.info(fourEventArr)
 				}
 			}
 
@@ -318,7 +320,10 @@ bp.registerBThread("boardUpdater", function() {
 		}
 		bp.log.info(e.data)
 		bp.log.info("--------------------")
-		bp.sync({request: bp.Event("BoardUpdated", {board: board, ev: e})})
+
+		//TODO: do we need to pass 'board'?
+		// bp.sync({request: bp.Event("BoardUpdated", {board: board, ev: e})})
+		bp.sync({request: bp.Event("BoardUpdated", {ev: e})})
 	}
 });
 
@@ -333,11 +338,41 @@ const ST_READY = 1
 const ST_MY = 2
 const ST_BAD = 3
 
-//TODO
-let serieses = [
-	[{row: 5, col: 1, edge: true}, {row: 5, col: 2}, {row: 5, col: 3}, {row: 5, col: 4}, {row: 5, col: 5, edge: true}],
-	[{row: 4, col: 1, edge: true}, {row: 4, col: 2}, {row: 4, col: 3}, {row: 4, col: 4}, {row: 4, col: 5, edge: true}],
-]
+
+let allFives = []
+for(var i = 0; i < 2; i++ ) {
+	for(var j = 0; j < 3; j++) {
+		allFives.push( [ { row : i, col : j, edge: true } , { row : i, col : j+1 } , { row : i, col : j+2 } , { row : i, col : j+3 } , { row : i, col : j+4 , edge: true} ] );
+		allFives.push( [ { row : i, col : j, edge: true } , { row : i + 1, col : j } , { row : i + 2, col : j } , { row : i + 3, col : j }, { row : i + 4, col : j , edge: true} ] );
+	}
+}
+
+
+for(var i = 2; i < 6; i++ ) {
+	for(var j = 0; j < 3; j++) {
+		allFives.push( [ { row : i, col : j, edge: true } , { row : i, col : j+1 } , { row : i, col : j+2 } , { row : i, col : j+3 },  { row : i, col : j+4 , edge: true} ] );
+	}
+}
+
+
+for(var i = 0; i < 2; i++ ) {
+	for(var j = 3; j < 7; j++) {
+		allFives.push( [ { row : i, col : j, edge: true } , { row : i + 1, col : j } , { row : i + 2, col : j } , { row : i + 3, col : j }, { row : i + 4, col : j , edge: true} ] );
+	}
+}
+
+for(var i = 0; i < 5; i++ ) {
+	for(var j = 0; j < 3; j++) {
+		if( i <= 1 && j <= 2 ) {
+			allFives.push( [ { row : i, col : j , edge: true} , { row : i + 1, col : j+1 } , { row : i + 2, col : j+2 } , { row : i + 3, col : j+3 }, { row : i + 4, col : j+4, edge: true} ] );
+		}
+		else {
+			allFives.push( [ { row : i, col : j, edge: true } , { row : i - 1, col : j+1 } , { row : i - 2, col : j+2 } , { row : i - 3, col : j+3 }, { row : i - 4, col : j+4, edge: true } ] );
+		}
+	}
+}
+
+
 
 function registerSeriesHandler(series) {
 	bp.registerBThread("seriesHandler", function () {
@@ -356,7 +391,7 @@ function registerSeriesHandler(series) {
 				//TODO do we even need boardUpdatedES?
 				let e = bp.sync({waitFor: boardUpdatedES})
 				ev = e.data.ev
-				bp.log.info("seriesHandler: got boardUpdatedES: " + ev.data.row + ", " + ev.data.col + " : " + ev.data.color)
+				// bp.log.info("seriesHandler: got boardUpdatedES: " + ev.data.row + ", " + ev.data.col + " : " + ev.data.color)
 				for (let i = 0; i < series.length; i++) {
 					cell = series[i]
 					if (ev.data.row == cell.row && ev.data.col == cell.col) {
@@ -395,19 +430,19 @@ function registerSeriesHandler(series) {
 				bp.log.info("seriesHandler series: ")
 				bp.log.info(series)
 				if (requesting.length > 0) {
-					bp.log.info("seriesHandler requesting (priority " + priority + "): " + requesting)
+					// bp.log.info("seriesHandler requesting (priority " + priority + "): " + requesting)
 					let e = bp.sync({request: requesting}, priority)
-					bp.log.info("seriesHandler requested " + e)
+					// bp.log.info("seriesHandler requested " + e)
 				} else if (requesting_edge.length > 0) {
-					bp.log.info("seriesHandler requesting_edge (priority 90): " + requesting_edge)
+					// bp.log.info("seriesHandler requesting_edge (priority 90): " + requesting_edge)
 					let e = bp.sync({request: requesting_edge}, 90)
-					bp.log.info("seriesHandler requested_edge " + e)
+					// bp.log.info("seriesHandler requested_edge " + e)
 				}
 			}
 		}
 	})
 }
 
-for (let i = 0; i < serieses.length; i++) {
-	registerSeriesHandler(serieses[i])
+for (let i = 0; i < allFives.length; i++) {
+	registerSeriesHandler(allFives[i])
 }
