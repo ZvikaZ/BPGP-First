@@ -190,23 +190,28 @@ let len = allFours.length; // number of fours
 for ( var i=0; i<len; i++ ) {
     (function(j){
         let currentFour = allFours[j];
-        bp.registerBThread("Detect yellow win" + "[" + "(" +  currentFour[0].row + "," + currentFour[0].col + ")" + " ; " + 
-        "(" +  currentFour[1].row + "," + currentFour[1].col + ")" + " ; " + 
-        "(" +  currentFour[2].row + "," + currentFour[2].col + ")" + " ; " + 
-        "(" +  currentFour[3].row + "," + currentFour[3].col + ")" + "]" , function() { 
+        let btName = "Detect yellow win" + "[" + "(" +  currentFour[0].row + "," + currentFour[0].col + ")" + " ; " +
+			"(" +  currentFour[1].row + "," + currentFour[1].col + ")" + " ; " +
+			"(" +  currentFour[2].row + "," + currentFour[2].col + ")" + " ; " +
+			"(" +  currentFour[3].row + "," + currentFour[3].col + ")" + "]"
+        bp.registerBThread(btName , function() {
             let fourEventArr = [];
             for(var i = 0; i < 4; i++) 
             {
                 fourEventArr.push(putCoin(currentFour[i].row, currentFour[i].col, "Yellow"));
             }
-			// bp.log.info(j)
-            // bp.log.info(fourEventArr)
+			// bp.log.dump(btName, "j", typeof(j), j)
+            // bp.log.dump(btName, "fourEventArr", typeof(fourEventArr), fourEventArr)
 
 			for ( var i=0; i<4; i++ ) {
 				// bp.log.info("Detect YellowWin waiting " + j + " #" + i)
 				// bp.log.info(fourEventArr)
 				let e = bp.sync({waitFor:fourEventArr});
 				if (true) {
+					bp.log.dump(btName, "e", typeof(e), e)
+					bp.log.dump(btName, "j", typeof(j), j)
+					bp.log.dump(btName, "i", typeof(i), i)
+					bp.log.dump(btName, "fourEventArr", typeof(fourEventArr), fourEventArr)
 					// bp.log.info("Detect YellowWin received " + j + ", #" + i + " : " + e)
 					// bp.log.info(fourEventArr)
 				}

@@ -30,7 +30,7 @@ public class BpgpProblem extends GPProblem implements SimpleProblemForm {
     }
     static Rival rival = Rival.RANDOM;
 
-    static int seed = 2;    //TODO randomize it? remove it altogether?
+    static int seed = 1;    //TODO randomize it? remove it altogether?
 
     private int bpRun(String generatedCode) {
         // This will load the program file from <Project>/src/main/resources/
