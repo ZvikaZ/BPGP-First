@@ -410,6 +410,7 @@ function initSeries(series) {
 	}
 }
 
+// strategy: catch the 3 center cells of empty five, and then one of the edges
 function registerFivesHandler(series) {
 	bp.registerBThread("fivesHandler", function () {
 		initSeries(series);
@@ -456,3 +457,11 @@ function registerFivesHandler(series) {
 for (let i = 0; i < allFives.length; i++) {
 	registerFivesHandler(allFives[i])
 }
+
+// strategy: catch the fourth cell out of four
+
+// strategy: catch 3 out of two 4-s, such as the opponent would have to block the first one, and we will complete the second above his coin
+
+
+// strategy: don't let the opponent to catch the fourth cell out of four
+// strategy: don't let the opponent to catch the the 3 center cells of empty five
