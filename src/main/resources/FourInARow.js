@@ -378,39 +378,44 @@ for(var i = 0; i < 5; i++ ) {
 }
 
 
-
-function registerSeriesHandler(series) {
-	bp.registerBThread("seriesHandler", function () {
-
-		// first row is already available
+function waitAndUpdateSeries(series) {
+	for (let players = 0; players < 2; players++) {
+		//TODO do we even need boardUpdatedES?
+		let e = bp.sync({waitFor: boardUpdatedES})
+		ev = e.data.ev
+		// bp.log.info("seriesHandler: got boardUpdatedES: " + ev.data.row + ", " + ev.data.col + " : " + ev.data.color)
 		for (let i = 0; i < series.length; i++) {
-			if (series[i].row == 5)
-				series[i].status = ST_READY
-			else
-				series[i].status = ST_TOO_HIGH
-		}
-
-		// start the main loop
-		while (true) {
-			for (let players = 0; players < 2; players++) {
-				//TODO do we even need boardUpdatedES?
-				let e = bp.sync({waitFor: boardUpdatedES})
-				ev = e.data.ev
-				// bp.log.info("seriesHandler: got boardUpdatedES: " + ev.data.row + ", " + ev.data.col + " : " + ev.data.color)
-				for (let i = 0; i < series.length; i++) {
-					cell = series[i]
-					if (ev.data.row == cell.row && ev.data.col == cell.col) {
-						if (ev.data.color == "Yellow")
-							cell.status = ST_MY
-						else {
-							bp.log.info("BAD BOY!")
-							cell.status = ST_BAD
-						}
-					} else if (ev.data.row == cell.row + 1 && ev.data.col == cell.col) {
-						cell.status = ST_READY
-					}
+			cell = series[i]
+			if (ev.data.row == cell.row && ev.data.col == cell.col) {
+				if (ev.data.color == "Yellow")
+					cell.status = ST_MY
+				else {
+					bp.log.info("BAD BOY!")
+					cell.status = ST_BAD
 				}
+			} else if (ev.data.row == cell.row + 1 && ev.data.col == cell.col) {
+				cell.status = ST_READY
 			}
+		}
+	}
+}
+
+function initSeries(series) {
+	// first row is already available
+	for (let i = 0; i < series.length; i++) {
+		if (series[i].row == 5)
+			series[i].status = ST_READY
+		else
+			series[i].status = ST_TOO_HIGH
+	}
+}
+
+function registerFivesHandler(series) {
+	bp.registerBThread("fivesHandler", function () {
+		initSeries(series);
+
+		while (true) {
+			waitAndUpdateSeries(series);
 
 			let priority = 40
 			let ok = true
@@ -449,5 +454,5 @@ function registerSeriesHandler(series) {
 }
 
 for (let i = 0; i < allFives.length; i++) {
-	registerSeriesHandler(allFives[i])
+	registerFivesHandler(allFives[i])
 }
