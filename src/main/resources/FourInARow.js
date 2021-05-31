@@ -200,18 +200,18 @@ for ( var i=0; i<len; i++ ) {
             {
                 fourEventArr.push(putCoin(currentFour[i].row, currentFour[i].col, "Yellow"));
             }
-			// bp.log.dump(btName, "j", typeof(j), j)
-            // bp.log.dump(btName, "fourEventArr", typeof(fourEventArr), fourEventArr)
+			bp.dump(btName, "j", typeof (j), j)
+			bp.dump(btName, "fourEventArr", typeof (fourEventArr), fourEventArr)
 
 			for ( var i=0; i<4; i++ ) {
 				// bp.log.info("Detect YellowWin waiting " + j + " #" + i)
 				// bp.log.info(fourEventArr)
 				let e = bp.sync({waitFor:fourEventArr});
 				if (true) {
-					bp.log.dump(btName, "e", typeof(e), e)
-					bp.log.dump(btName, "j", typeof(j), j)
-					bp.log.dump(btName, "i", typeof(i), i)
-					bp.log.dump(btName, "fourEventArr", typeof(fourEventArr), fourEventArr)
+					bp.dump(btName, "e", typeof(e), e)
+					bp.dump(btName, "j", typeof(j), j)
+					bp.dump(btName, "i", typeof(i), i)
+					bp.dump(btName, "fourEventArr", typeof(fourEventArr), fourEventArr)
 					// bp.log.info("Detect YellowWin received " + j + ", #" + i + " : " + e)
 					// bp.log.info(fourEventArr)
 				}
