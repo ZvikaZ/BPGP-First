@@ -70,7 +70,8 @@ pop.subpop.0.size	= 1
 
 
 # use all CPU cores available for threads ; set seeds to 'time'
-evalthreads = auto
+#evalthreads = auto
+seed.0 = 1
 # setting this to auto, causes few Exceptions, and individuals getting lost
 #breedthreads = auto
 

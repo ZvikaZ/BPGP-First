@@ -64,7 +64,7 @@ f.close()
 f = open("dump.gtkw", "w")
 saver = gtkw.GTKWSave(f)
 saver.dumpfile("dump.vcd")
-for group in groups:
+for group in sorted(groups):
     with saver.group(group):
         for signal in groups[group]:
             assert len(groups[group]) == len(set(groups[group]))

@@ -118,7 +118,8 @@ bp.registerBThread("put in col" , function() {
 	let columns = [ 5 , 5 , 5 , 5 , 5 , 5 , 5 ];
 	while(true) {
 		let e = bp.sync({waitFor: AnyPut });
-		bp.sync({request: putCoin( columns[e.data.col]-- , e.data.col, e.data.color)});
+		let ev = bp.sync({request: putCoin( columns[e.data.col]-- , e.data.col, e.data.color)});
+		bp.dump("put in col", "ev", typeof(ev), ev)
 	}
 });
 
@@ -390,7 +391,7 @@ function waitAndUpdateSeries(series) {
 				if (ev.data.color == "Yellow")
 					cell.status = ST_MY
 				else {
-					bp.log.info("BAD BOY!")
+					// bp.log.info("BAD BOY!")
 					cell.status = ST_BAD
 				}
 			} else if (ev.data.row == cell.row + 1 && ev.data.col == cell.col) {

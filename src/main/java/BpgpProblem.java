@@ -45,7 +45,7 @@ public class BpgpProblem extends GPProblem implements SimpleProblemForm {
         final BProgram bprog = new StringBProgram(code);
 
         //TODO the seed seems to only partially keep random stability
-        var prio = new PrioritizedBSyncEventSelectionStrategy(seed);
+        PrioritizedBSyncEventSelectionStrategy prio = new PrioritizedBSyncEventSelectionStrategy(seed);
         prio.setDefaultPriority(0);
         bprog.setEventSelectionStrategy(prio);
 
